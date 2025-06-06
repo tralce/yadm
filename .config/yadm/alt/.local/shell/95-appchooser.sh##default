@@ -1,21 +1,26 @@
-if which nvim &>/dev/null; then
+. ~/.local/shell/99-src.sh
+
+if cmd nvim; then
   export EDITOR=nvim
   export VISUAL=nvim
   alias vim="nvim"
   alias vimdiff="nvim -d"
-elif which vim &>/dev/null; then
+elif cmd vim; then
   export EDITOR=vim
   export VISUAL=vim
-else
+elif cmd vi; then
+  export EDITOR=vi
+  export VISUAL=vi
+elif cmd nano;then
   export EDITOR=nano
   export VISUAL=nano
 fi
 
-if which nvimpager &>/dev/null; then
+if cmd nvimpager; then
   export PAGER="nvimpager"
-elif which vimpager &>/dev/null; then
+elif cmd vimpager; then
   export PAGER="vimpager"
-else
+elif cmd less;then
   export LESS="-Rcsi"
   export PAGER="less -Rcsi"
   export LESS_TERMCAP_md=$'\e[01;31m'
@@ -26,12 +31,12 @@ else
   export LESS_TERMCAP_us=$'\e[01;32m'
 fi
 
-if which lsd &>/dev/null; then
+if cmd lsd; then
   alias ls="lsd"
   alias lst="lsd -lS --total-size"
 fi
 
-if which viddy &>/dev/null; then
+if cmd viddy; then
   alias watch="viddy -d"
 fi
 
