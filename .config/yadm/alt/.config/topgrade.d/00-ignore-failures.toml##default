@@ -1,0 +1,8 @@
+# vim:ft=toml
+[misc]
+# ignore_failures = [
+#   "snap",
+#   "distrobox",
+#   "shell",
+#   "vim"
+# ]

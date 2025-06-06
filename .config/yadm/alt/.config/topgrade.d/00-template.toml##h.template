@@ -1,0 +1,3 @@
+# vim:ft=toml
+[commands]
+"" = "if which  &> /dev/null;then ;else echo ' not found';fi"

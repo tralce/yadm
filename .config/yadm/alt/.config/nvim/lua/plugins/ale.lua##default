@@ -1,0 +1,41 @@
+return {
+	"dense-analysis/ale",
+	lazy = false,
+	priority = 900,
+	init = function()
+		-- General Settings
+		vim.g.ale_enabled = 1
+		vim.g.ale_echo_msg_format = "[%severity%] %s [%linter%]"
+		vim.g.ale_virtualtext_cursor = "current"
+		vim.g.ale_set_loclist = 1
+		vim.g.ale_set_quickfix = 1
+		vim.g.ale_echo_cursor = 1
+
+		-- Fixers
+		vim.g.ale_fix_on_save = 1
+		vim.g.ale_fixers = {
+			["*"] = { "remove_trailing_lines", "trim_whitespace" },
+			openscad = { "scadformat" },
+			lua = { "stylua" },
+			bash = { "shfmt" },
+			sh = { "shfmt" },
+			yaml = { "yamlfmt" },
+			json = { "biome" },
+		}
+
+		-- Linters
+		vim.g.ale_linters_explicit = 0
+
+		-- Linter and fixer options
+		vim.g.ale_sh_shfmt_options = "-i 2"
+		vim.g.ale_bash_shfmt_options = "-i 2"
+		vim.g.ale_lua_stylua_options = "--collapse-simple-statement always"
+		vim.g.ale_openscad_sca2d_options = "--ignore I0004, I0006, I1001, I1002, I3001 "
+
+		-- Linting Triggers
+		vim.g.ale_lint_on_save = 1
+		vim.g.ale_lint_on_text_changed = "always"
+		vim.g.ale_lint_on_insert_leave = 1
+		vim.g.ale_lint_on_enter = 1
+	end,
+}

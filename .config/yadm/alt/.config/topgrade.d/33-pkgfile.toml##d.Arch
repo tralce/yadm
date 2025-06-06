@@ -1,0 +1,3 @@
+# vim:ft=toml
+[commands]
+"33 Update pkgfile database" = "sudo pkgfile --update"

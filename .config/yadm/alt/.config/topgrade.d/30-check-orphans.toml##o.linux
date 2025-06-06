@@ -1,0 +1,3 @@
+# vim:ft=toml
+[commands]
+"30 Remove old packages" = "~/.bin/check-orphans.sh"

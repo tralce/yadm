@@ -1,0 +1,3 @@
+# vim:ft=toml
+[commands]
+"32 Purge pacman cache" = "sudo paccache -rk0"

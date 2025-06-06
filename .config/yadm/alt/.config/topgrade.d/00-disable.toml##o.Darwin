@@ -1,0 +1,6 @@
+# vim:ft=toml
+[misc]
+#disable = [
+#  "pip3",
+#  "shell"
+#]

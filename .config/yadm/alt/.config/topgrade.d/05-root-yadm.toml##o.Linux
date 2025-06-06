@@ -1,0 +1,3 @@
+# vim:ft=toml
+[commands]
+"05 root yadm" = "bash -c 'if [ $UID -ne 0 ]; then sudo -H yadm pull;else echo skipping;fi'"

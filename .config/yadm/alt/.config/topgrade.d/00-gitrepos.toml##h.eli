@@ -1,0 +1,6 @@
+# vim:ft=toml
+[git]
+repos = [
+  "~/repos/autopull/*/",
+  "~/Documents/repos/autopull/*/",
+]

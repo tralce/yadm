@@ -1,0 +1,3 @@
+# vim:ft=toml
+[commands]
+"20 dietpi-update" = "if [ -e /boot/dietpi/dietpi-update ];then sudo /boot/dietpi/dietpi-update;else echo 'dietpi-update not found';fi"

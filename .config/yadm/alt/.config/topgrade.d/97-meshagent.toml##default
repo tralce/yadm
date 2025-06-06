@@ -1,0 +1,3 @@
+# vim:ft=toml
+[commands]
+"97 meshagent" = "~/.bin/init-meshagent.sh"

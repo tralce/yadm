@@ -1,0 +1,3 @@
+# vim:ft=toml
+[commands]
+"80 docker-compose up?" = "$HOME/.bin/check-dcup"

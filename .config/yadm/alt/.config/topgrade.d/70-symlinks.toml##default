@@ -1,0 +1,3 @@
+# vim:ft=toml
+[commands]
+"70 symlinks" = "if which symlinks &> /dev/null;then symlinks -rd ~ 2>&1 | sed -e '/absolute/d' -e '/other_fs/d' -e '/messy/d';else echo 'symlinks not found';fi"

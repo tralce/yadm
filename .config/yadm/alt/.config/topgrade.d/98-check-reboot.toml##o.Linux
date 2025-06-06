@@ -1,0 +1,3 @@
+# vim:ft=toml
+[post_commands]
+"98 Check reboot" = "~/.bin/checkreboot.sh -c"

@@ -1,0 +1,64 @@
+# vim:syn=toml
+
+[colors]
+transparent_background_colors = true
+
+[colors.bright]
+black = "#767676"
+blue = "#1a8fff"
+cyan = "#14ffff"
+green = "#23fd00"
+magenta = "#fd28ff"
+red = "#f2201f"
+white = "#ffffff"
+yellow = "#fffd00"
+
+[colors.normal]
+black = "#000000"
+blue = "#0d73cc"
+cyan = "#0dcdcd"
+green = "#19cb00"
+magenta = "#cb1ed1"
+red = "#cc0403"
+white = "#dddddd"
+yellow = "#cecb00"
+
+[colors.primary]
+background = "#000000"
+foreground = "#dddddd"
+
+[cursor]
+blink_timeout = 0
+style = {blinking = "On",shape = "Block"}
+vi_mode_style = {blinking = "Off",shape = "Beam"}
+
+[env]
+TERM = "xterm-256color"
+
+[font]
+<% if [ "$YADM_HOSTNAME" = "alyx" ];then -%>
+size = 8.0
+<% else -%>
+size = 11.0
+<% fi -%>
+
+[font.normal]
+family = "Fira Code"
+
+# [font.italic]
+# family = "Fira Code"
+
+# [font.bold]
+# family = "Fira Code"
+
+# [font.bold_italic]
+# family = "Fira Code"
+
+[window]
+dynamic_title = true
+opacity = 0.8
+
+[window.padding]
+x = 5
+y = 3
+

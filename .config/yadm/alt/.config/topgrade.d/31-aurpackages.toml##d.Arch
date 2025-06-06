@@ -1,0 +1,3 @@
+# vim:ft=toml
+[commands]
+"31 Remove old packages" = "~/.bin/check-aur-packages.sh"

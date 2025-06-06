@@ -1,0 +1,1 @@
+return {"vhyrro/luarocks.nvim", enabled = false, priority = 999, config = true}

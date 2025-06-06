@@ -1,0 +1,8 @@
+[geometry]
+
+[nitrogen]
+view=icon
+recurse=true
+sort=alpha
+icon_caps=false
+dirs={{ env.HOME }}/Documents/Images/Wallpapers;

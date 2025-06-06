@@ -1,0 +1,3 @@
+# vim:ft=toml
+[commands]
+"04 sysyadm diff" = "~/.bin/yadm-diff.sh -s"

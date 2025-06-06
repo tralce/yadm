@@ -1,0 +1,3 @@
+# vim:ft=toml
+[commands]
+"02 yadm diff" = "~/.bin/yadm-diff.sh -u"

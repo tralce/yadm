@@ -1,0 +1,3 @@
+# vim:ft=toml
+[pre_commands]
+"03 sysyadm" = "sudo -H yadm --yadm-dir /etc/yadm --yadm-data /etc/yadm/data pull"

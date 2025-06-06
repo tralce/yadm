@@ -1,0 +1,54 @@
+{
+    "devices": {
+        "alsa_card.usb-Sonix_Technology_Co.__Ltd._USB_2.0_Camera_SN0001-02": {
+            "ports": {
+                "analog-input-mic": {
+                    "visible": false
+                }
+            }
+        },
+        "alsa_card.usb-Razer_Razer_Nari_Ultimate-00": {
+            "ports": {
+                "razer-nari-output-chat": {},
+                "razer-nari-output-game": {},
+                "razer-nari-input": {}
+            }
+        },
+        "alsa_card.pci-0000_06_00.1": {
+            "ports": {
+                "hdmi-output-0": {},
+                "hdmi-output-1": {},
+                "hdmi-output-2": {
+                    "visible": false
+                },
+                "hdmi-output-3": {},
+                "hdmi-output-4": {},
+                "hdmi-output-5": {}
+            }
+        },
+        "alsa_card.pci-0000_08_00.3": {
+            "ports": {
+                "analog-input-front-mic": {},
+                "analog-input-rear-mic": {},
+                "analog-input-linein": {},
+                "analog-output-lineout": {},
+                "analog-output-headphones": {},
+                "iec958-stereo-output": {
+                    "visible": false
+                }
+            }
+        },
+        "alsa_card.usb-Razer_Razer_Kraken_V3_X_00000000-00": {
+            "ports": {
+                "analog-input-mic": {
+                    "visible": false
+                },
+                "iec958-stereo-input": {},
+                "analog-output-speaker": {
+                    "visible": false
+                },
+                "iec958-stereo-output": {}
+            }
+        }
+    }
+}

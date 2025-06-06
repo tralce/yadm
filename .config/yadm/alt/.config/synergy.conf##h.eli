@@ -1,0 +1,41 @@
+section: screens
+  dog:
+    preserveFocus = true
+  alyx:
+    preserveFocus = true
+  adrian:
+    preserveFocus = true
+  eli:
+    preserveFocus = true
+  leon:
+    preserveFocus = true
+end
+
+section: aliases
+end
+
+section: links
+  dog:
+    down = adrian
+    left = eli(0,33)
+  eli:
+    right(0,33) = dog
+    right(33,66) = adrian
+    right(66,100) = alyx
+    up = leon
+  adrian:
+    up = dog
+    left = eli(33,66)
+    down = alyx
+  alyx:
+    left = eli(66,100)
+    up = adrian
+  leon:
+    # right = gman(44,100)
+    down = eli
+end
+
+section: options
+  relativeMouseMoves = true
+  win32KeepForeground = true
+end

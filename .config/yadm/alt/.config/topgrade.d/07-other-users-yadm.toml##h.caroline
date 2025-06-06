@@ -1,0 +1,3 @@
+# vim:ft=toml
+[commands]
+"07 other users' yadms" = "bash -c 'for username in $(ls /home);do sudo -H -u $username yadm pull;done'"

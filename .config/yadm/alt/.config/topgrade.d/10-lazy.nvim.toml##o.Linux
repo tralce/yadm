@@ -1,0 +1,3 @@
+# vim:ft=toml
+[commands]
+"10 Sync Lazy.nvim" = "if which nvim &> /dev/null;then nvim --headless '+Lazy! sync' +qa;else echo 'nvim not found';fi"
