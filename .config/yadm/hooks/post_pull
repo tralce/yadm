@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. ~/.shell/99-src.sh
+. ~/.local/shell/99-src.sh
 
 check_sheldon() {
   colorText 4 "Checking sheldon..."
