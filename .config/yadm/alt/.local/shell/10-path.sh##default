@@ -14,6 +14,7 @@ paths=(
   ~/.bin
   ~/.local/bin
   ~/.config/yadm/submodules/transcrypt
+  ~/.config/yadm/submodules/bin/$(uname -m)
   # /usr/local/opt/coreutils/libexec/gnubin
   # ~/.local/share/gem/ruby/3.4.0/bin
 )

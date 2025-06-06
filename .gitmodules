@@ -1,3 +1,6 @@
 [submodule ".config/yadm/submodules/transcrypt"]
 	path = .config/yadm/submodules/transcrypt
 	url = https://github.com/elasticdog/transcrypt.git
+[submodule ".config/yadm/submodules/bin"]
+	path = .config/yadm/submodules/bin
+	url = https://gitea.tralce.com/tralce/bin.git
