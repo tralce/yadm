@@ -1,0 +1,117 @@
+#!/bin/zsh
+export shellver="zshrc v2025-04-10"
+
+# zsh settings {{{
+autoload -U bashcompinit colors compinit edit-command-line promptinit zkbd
+compinit -u
+bashcompinit
+promptinit
+colors
+zle -N edit-command-line
+zle -N history-substring-search-up
+zle -N history-substring-search-down
+
+setopt AUTO_PUSHD
+setopt COMPLETE_ALIASES
+setopt CORRECT
+setopt EXTENDED_GLOB
+setopt HIST_IGNORE_ALL_DUPS
+setopt NOMATCH
+setopt NOTIFY
+setopt NO_AUTO_CD
+setopt NO_BEEP
+setopt PUSHD_IGNORE_DUPS
+setopt PUSHD_SILENT
+setopt RC_EXPAND_PARAM
+setopt SHARE_HISTORY
+
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+zstyle ':completion:*' rehash true
+zstyle ':completion:*' completer _expand _complete _ignored _correct _approximate
+zstyle ':completion:*' matcher-list 'm:{[:lower:]}={[:upper:]}' 'r:|[._-]=** r:|=**'
+
+HISTFILE=$HOME/.histfile
+HISTSIZE=10000
+SAVEHIST=10000
+# }}}
+
+# sources {{{
+for script in ~/.local/shell/*.sh; do
+  source "$script"
+done
+
+[ -f "/usr/share/doc/pkgfile/command-not-found.zsh" ] && source /usr/share/doc/pkgfile/command-not-found.zsh
+[ -f "/etc/zsh_command_not_found" ] && source /etc/zsh_command_not_found
+
+if type sheldon &>/dev/null; then
+  eval "$(sheldon source)"
+fi
+# }}}
+
+MNML_PROMPT=(mnml_ranger mnml_uhp mnml_pyenv mnml_status mnml_keymap)
+MNML_RPROMPT=(mnml_git)
+
+# git status {{{
+function maybe_git_status() {
+  if [[ -z $BUFFER ]] && git rev-parse --is-inside-work-tree &>/dev/null; then
+    echo
+    git status --short --branch --untracked-files=normal --renames
+    zle reset-prompt
+    return 0
+  fi
+  zle accept-line
+}
+zle -N maybe_git_status
+# }}}
+
+# keybinds {{{
+bindkey -e
+bindkey -M emacs '^M' maybe_git_status
+bindkey -M vicmd '^M' maybe_git_status
+bindkey -M viins '^M' maybe_git_status
+
+# Define key bindings based on terminfo keys
+typeset -g -A key
+key[Home]="${terminfo[khome]}"
+key[End]="${terminfo[kend]}"
+key[Backspace]="${terminfo[kbs]}"
+key[Delete]="${terminfo[kdch1]}"
+key[Up]="${terminfo[kcuu1]}"
+key[Down]="${terminfo[kcud1]}"
+key[Left]="${terminfo[kcub1]}"
+key[Right]="${terminfo[kcuf1]}"
+key[PageUp]="${terminfo[kpp]}"
+key[PageDown]="${terminfo[knp]}"
+key[Shift-Tab]="${terminfo[kcbt]}"
+
+[[ -n "${key[Home]}"      ]] && bindkey -- "${key[Home]}"      beginning-of-line
+[[ -n "${key[End]}"       ]] && bindkey -- "${key[End]}"       end-of-line
+[[ -n "${key[Backspace]}" ]] && bindkey -- "${key[Backspace]}" backward-delete-char
+[[ -n "${key[Delete]}"    ]] && bindkey -- "${key[Delete]}"    delete-char
+[[ -n "${key[Up]}"        ]] && bindkey -- "${key[Up]}"        history-substring-search-up
+[[ -n "${key[Down]}"      ]] && bindkey -- "${key[Down]}"      history-substring-search-down
+[[ -n "${key[Left]}"      ]] && bindkey -- "${key[Left]}"      backward-char
+[[ -n "${key[Right]}"     ]] && bindkey -- "${key[Right]}"     forward-char
+[[ -n "${key[PageUp]}"    ]] && bindkey -- "${key[PageUp]}"    beginning-of-buffer-or-history
+[[ -n "${key[PageDown]}"  ]] && bindkey -- "${key[PageDown]}"  end-of-buffer-or-history
+[[ -n "${key[Shift-Tab]}" ]] && bindkey -- "${key[Shift-Tab]}" reverse-menu-complete
+
+if (( ${+terminfo[smkx]} && ${+terminfo[rmkx]} )); then
+  autoload -Uz add-zle-hook-widget
+  function zle_application_mode_start { echoti smkx }
+  function zle_application_mode_stop { echoti rmkx }
+  add-zle-hook-widget -Uz zle-line-init zle_application_mode_start
+  add-zle-hook-widget -Uz zle-line-finish zle_application_mode_stop
+fi
+
+bindkey '^xe' edit-command-line
+bindkey '^x^e' edit-command-line
+bindkey "^[[1;5C" forward-word
+bindkey "^[[1;5D" backward-word
+bindkey '^H' backward-kill-word
+# }}}
+
+if [[ $- =~ i ]]; then
+  [ -e ~/.config/autotmx ] && [ -n "$SSH_CLIENT" ] && $HOME/.bin/tmx
+  ~/.bin/splash.sh
+fi

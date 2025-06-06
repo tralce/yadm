@@ -1,0 +1,39 @@
+#!/bin/bash
+# vim:foldmethod=marker
+export shellver="bashrc v2025-04-10"
+
+for script in ~/.local/shell/*.sh; do
+  . "$script"
+done
+
+[ -f /usr/share/doc/pkgfile/command-not-found.bash ] && . /usr/share/doc/pkgfile/command-not-found.bash
+[[ $PS1 && -f /usr/share/bash-completion/bash_completion ]] && . /usr/share/bash-completion/bash_completion
+
+# shell options {{{
+HISTSIZE="32768" # biggest history possible
+HISTCONTROL=ignoreboth
+PROMPT_COMMAND='history -a' # immediately append to .bash_history
+shopt -s checkwinsize       # fix window size on resize
+shopt -s histappend         # append to .bash_history instead of overwriting
+# }}}
+
+# prompt {{{
+rnglv=
+if [ -n "$RANGER_LEVEL" ]; then
+  rnglv="\[\e[33m\][$RANGER_LEVEL deep into ranger shells]\[\e[m\]\n"
+fi
+if [ $UID = 0 ]; then
+  export PS1="$rnglv\[\e[91m\]\u\[\e[m\]\[\e[36m\]@\[\e[m\]\[\e[92m\]\h\[\e[m\] \[\e[36m\]\w\[\e[m\] \[\e[91m\]\\$\[\e[m\] "
+else
+  export PS1="$rnglv\[\e[92m\]\u\[\e[m\]\[\e[36m\]@\[\e[m\]\[\e[92m\]\h\[\e[m\] \[\e[36m\]\w\[\e[m\] \[\e[92m\]\\$\[\e[m\] "
+fi
+# }}}
+
+# tmux and splash {{{
+if [[ $- =~ i ]]; then
+  stty ixoff -ixon # disable C-s to pause
+  stty ixany       # any sequence can restart flow
+  [ -e ~/.config/autotmx ] && [ -n "$SSH_CLIENT" ] && [ -f ~/.bin/tmx ] && ~/.bin/tmx
+  ~/.bin/splash.sh
+fi
+# }}}

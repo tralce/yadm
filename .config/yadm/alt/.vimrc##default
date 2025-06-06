@@ -1,0 +1,63 @@
+" sets {{{
+" ui and appearance
+highlight clear CursorLine
+set cursorline
+if has("nvim")
+  set fillchars=fold:─
+else
+  set fillchars=fold:-
+endif
+set foldmethod=marker
+set showcmd
+set showmatch
+syntax on
+
+" editing and indentation
+set autoindent
+set expandtab
+set modeline
+set nowrap
+set shiftwidth=2
+set tabstop=2
+
+" behavior and interaction
+set clipboard+=unnamedplus
+set confirm
+set mouse=a
+" }}}
+
+" backup and undo {{{
+if exists('g:neovide')
+  let g:neovide_scale_factor = 1.0
+  let g:neovide_transparency = 0.8
+endif
+
+if has("nvim")
+  let $NVIM_TUI_ENABLE_TRUE_COLOR = 1
+  set backupdir=~/.vim/nvim_backup//
+  set undodir=~/.vim/nvim_undo//
+  set directory=~/.vim/nvim_swap//
+else
+  set backupdir=~/.vim/vim_backup//
+  set undodir=~/.vim/vim_undo//
+  set directory=~/.vim/vim_swap//
+endif
+
+if !isdirectory(&backupdir) | call mkdir(&backupdir) | endif
+if !isdirectory(&directory)  | call mkdir(&directory)  | endif
+if !isdirectory(&undodir)    | call mkdir(&undodir)    | endif
+
+set undofile
+" }}}
+
+" commands and remaps {{{
+for c in ['W', 'Q', 'Wq', 'WQ', 'Wa', 'WA', 'Wqa']
+  execute 'command! '.c.' '.tolower(c)
+endfor
+command! Cls  :let @/ = ""
+
+map Y y$
+nmap ; :
+nnoremap N Nzz
+nnoremap n nzz
+" }}}

@@ -1,0 +1,18 @@
+clear   mod1
+add     mod1  = Alt_L
+
+clear   mod3
+add     mod3  = Scroll_Lock
+
+clear   mod4
+add     mod4  = Super_L
+
+clear   mod5
+
+keycode 104   = Return
+keycode 134   =
+keycode 135   =
+keycode 204   =
+keycode 205   =
+keycode 206   =
+keycode 207   =

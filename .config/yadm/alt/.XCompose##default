@@ -1,0 +1,6 @@
+include "%L"
+<Multi_key> <c> <m> : "✓"
+# <Multi_key> <m> <n> : "♪" # defined as "#" "e"
+# <Multi_key> <m> <s> : "♯" # defined as "#" "#"
+# <Multi_key> <m> <f> : "♭" # defined as "#" "b"
+<Multi_key> <b> <b> : "​​"
