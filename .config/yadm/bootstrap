@@ -15,7 +15,7 @@ fi
 colorText 4 "Checking sheldon..."
 if ! command -v sheldon
 then
-  curl --proto '=https' -fLsS https://rossmacarthur.github.io/install/crate.sh | bash -s -- --repo rossmacarthur/sheldon --to ~/.local/bin -f && sheldon lock --update
+  curl --proto '=https' -fLsS https://rossmacarthur.github.io/install/crate.sh | bash -s -- --repo rossmacarthur/sheldon --to ~/.local/bin -f && ~/.local/bin/sheldon lock --update
 fi
 
 colorText 4 "Resetting ssh perms..."
