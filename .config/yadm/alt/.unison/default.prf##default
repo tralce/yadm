@@ -1,0 +1,113 @@
+# Unison preferences file
+
+#merge = Name *.sh -> tmux split-pane nvim -d CURRENT1 CURRENT2
+#merge = Name .* -> tmux split-pane nvim -d CURRENT1 CURRENT2
+diff = colordiff -u CURRENT1 CURRENT2
+
+confirmmerge = true
+log = false
+retry=5
+sshargs = -C -o ConnectTimeout=10
+xferbycopying = true
+
+# ESO
+ignore = Name {,.}*{TTC_Lock}
+ignore = Name {ShaderCache.cooked}
+ignore = Name {UserSettings.txt}
+ignore = Name {client.log}
+ignore = Name {interface.log}
+ignore = Path {Elder Scrolls Online}
+ignore = Path {live}
+ignore = Path {typus42/AddOns}
+ignore = Path {wtu/AddOns}
+ignore = Path {wtu/Screenshots}
+
+follow = Path {Muscatek}
+follow = Path {PhotoLibrary}
+
+#ignorenot = Name {ChatLog.log}
+ignore = Name {,.}*{.bak}
+ignore = Name {,.}*{.cachedmsg}
+ignore = Name {,.}*{.crdownload}
+ignore = Name {,.}*{.desktop}
+ignore = Name {,.}*{.drivedownload}
+ignore = Name {,.}*{.driveupload}
+ignore = Name {,.}*{.hash}
+ignore = Name {,.}*{.lnk}
+ignore = Name {,.}*{.ods#}
+ignore = Name {,.}*{.part}
+ignore = Name {,.}*{.resume}
+ignore = Name {,.}*{.sav.bak}
+ignore = Name {,.}*{.url}
+ignore = Name {.AppleDouble}
+ignore = Name {.DS_Store}
+ignore = Name {.Trash-1000}
+ignore = Name {._}*
+ignore = Name {.fcpcache}
+ignore = Name {.git}
+ignore = Name {.host}
+ignore = Name {.last}
+ignore = Name {.localized}
+ignore = Name {.tty}
+ignore = Name {.viminfo}
+ignore = Name {.wdmc}
+ignore = Name {Icon}
+ignore = Name {LogsModuleInterface}
+ignore = Name {RunnerLogs}
+ignore = Name {Settings Logs}
+ignore = Name {desktop.ini}
+ignore = Path {.#lk*}
+ignore = Path {.Trash-0}
+ignore = Path {.placeholder}
+ignore = Path {.tmp.drivedownload}
+ignore = Path {Cache/index}
+ignore = Path {Camera Roll}
+ignore = Path {CampTemp}
+ignore = Path {Custom Office Templates}
+ignore = Path {Dolphin Emulator}
+ignore = Path {FeedbackHub}
+ignore = Path {GPUCache/index}
+ignore = Path {Garmin}
+ignore = Path {Launcher/launcher.settings}
+ignore = Path {Microsoft Support and Recovery Assistant.appref-ms}
+ignore = Path {Photos Library.photoslibrary}
+ignore = Path {Radeon ReLive}
+ignore = Path {RemotePC}
+ignore = Path {Saved Pictures}
+ignore = Path {Screenshots}
+ignore = Path {SnappyDriverInstaller/logs}
+ignore = Path {SnappyDriverInstaller/update}
+ignore = Path {Splashtop Business}
+ignore = Path {System Volume Information}
+ignore = Path {Telltale Games/Tales from the Borderlands/Net}
+ignore = Path {UbisoftConnect}
+ignore = Path {Uplay}
+ignore = Path {UseNet}
+ignore = Path {WindowsPowerShell}
+ignore = Path {Zoom}
+ignore = Path {esodb}
+ignore = Path {iMovie Library.imovielibrary}
+ignore = Path {iMovie Theater.theater}
+ignore = Path {iPod Photo Cache}
+ignore = Path {mc.wtu.fyi/.minecraft/fabricloader.log}
+ignore = Path {mc.wtu.fyi/.minecraft/logs/latest.log}
+ignore = Path {mc.wtu.fyi/.minecraft/logs/rei.log}
+ignore = Path {random_seed}
+ignore = Path {stats}
+
+ignore = Path {PowerShell}
+ignore = Path {BioshockHD}
+ignore = Path {WindowsStuff/Piriform/Standalone/LOG}
+ignore = Path {WindowsStuff/Piriform/Standalone/Setup}
+ignore = Path {WindowsStuff/Piriform/Standalone/ccleaner.ini}
+ignore = Path {WindowsStuff/Piriform/Standalone/temp_ccupdate}
+ignore = Path {Feedback}
+
+ignore = Path {PhotoLibrary}
+ignore = Path {resources/cpl/cloudsync.noindex/storage/store.cloudphotodb-shm}
+ignore = Path {private/com.apple.mediaanalysisd/MediaAnalysis/mediaanalysis.db-shm}
+ignore = Path {database/Photos.sqlite-shm}
+ignore = Path {.stfolder}
+ignore = Name {,.}*{.tmp}
+
+ignore = Path {Wallpapers/.stfolder}
