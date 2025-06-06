@@ -1,0 +1,28 @@
+paths=(
+  /bin
+  /sbin
+  /usr/sbin
+  /usr/local/bin
+  /usr/bin
+
+  /home/linuxbrew/.linuxbrew/bin
+  /var/lib/snapd/snap/bin
+
+  ~/.cargo/bin
+  ~/go/bin
+
+  ~/.bin
+  ~/.local/bin
+  # /usr/local/opt/coreutils/libexec/gnubin
+  # ~/.local/share/gem/ruby/3.4.0/bin
+)
+
+PATH=/usr/bin
+
+for newpath in "${paths[@]}"; do
+  if [ -d "$newpath" ] && [[ ":$PATH:" != *":$newpath:"* ]]; then
+    PATH="$newpath:$PATH"
+  fi
+done
+
+export PATH

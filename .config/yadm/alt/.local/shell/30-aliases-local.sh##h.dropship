@@ -1,0 +1,2 @@
+alias checkaur="sudo pacman -U --needed ~/repo/x86_64/aur/*.pkg.tar.zst"
+alias newmeta="PKGDEST=~/repo/x86_64/meta makepkg -d && refresh-repo.sh meta"

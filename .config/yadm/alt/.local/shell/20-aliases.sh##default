@@ -1,0 +1,32 @@
+. ~/.local/shell/99-src.sh
+# Real aliases
+alias fixsshperms="chmod -Rc a-xst+X,u+rw,go-rwx ~/.ssh/"
+alias resetperms="chmod -R a-x+X,u+rw,go-w+r"
+alias sync_size="watch grep -e Dirty: -e Writeback: /proc/meminfo"
+alias fuck='sudo $(fc -nl -1)'
+alias rmkey="ssh-keygen -f ~/.ssh/known_hosts -R"
+
+alias edit_yadm_config="vim ~/.local/share/yadm/repo.git/config"
+alias edit_sysyadm_config="checkroot vim /etc/yadm/data/repo.git/config"
+alias reset_sysyadm="sysyadm reset --hard origin/master"
+alias reset_yadm="yadm reset --hard origin/master"
+alias sysyadm="sudo -H yadm --yadm-dir /etc/yadm --yadm-data /etc/yadm/data"
+alias update_sysyadm='sysyadm pull && sysyadm add -u && sysyadm commit -m "$(uuidgen)" && sysyadm push'
+alias update_yadm='yadm pull && yadm add -u && yadm commit -m "$(uuidgen)" && yadm push'
+
+# Just tweaks
+alias chgrp="chgrp -c"
+alias chmod="chmod -c"
+alias chown="chown -c"
+alias cp="cp -v"
+alias dmesg="checkroot dmesg -T"
+alias grep="grep --color=auto"
+alias lsblk="lsblk -o NAME,SIZE,FSAVAIL,FSUSE%,FSTYPE,MOUNTPOINT,LABEL"
+alias mv="mv -v"
+alias poweroff="checkroot poweroff"
+alias reboot="checkroot reboot"
+alias rename="rename -v"
+alias shred="shred -vun50"
+alias updatedb="checkroot updatedb"
+
+test -e /sys/firmware/devicetree/base/model && alias pimodel="cat /sys/firmware/devicetree/base/model"

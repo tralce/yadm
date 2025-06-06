@@ -1,0 +1,6 @@
+export QT_QPA_PLATFORMTHEME="qt5ct"
+export HISTSIZE=9999999
+export HISTFILESIZE=9999999
+export SAVEHIST=9999999
+export OPENSCADPATH=~/Documents/scad/_libraries
+export PYTHONWARNINGS="ignore::FutureWarning"

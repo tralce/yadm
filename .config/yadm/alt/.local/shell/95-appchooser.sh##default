@@ -1,0 +1,40 @@
+if which nvim &>/dev/null; then
+  export EDITOR=nvim
+  export VISUAL=nvim
+  alias vim="nvim"
+  alias vimdiff="nvim -d"
+elif which vim &>/dev/null; then
+  export EDITOR=vim
+  export VISUAL=vim
+else
+  export EDITOR=nano
+  export VISUAL=nano
+fi
+
+if which nvimpager &>/dev/null; then
+  export PAGER="nvimpager"
+elif which vimpager &>/dev/null; then
+  export PAGER="vimpager"
+else
+  export LESS="-Rcsi"
+  export PAGER="less -Rcsi"
+  export LESS_TERMCAP_md=$'\e[01;31m'
+  export LESS_TERMCAP_me=$'\e[0m'
+  export LESS_TERMCAP_se=$'\e[0m'
+  export LESS_TERMCAP_so=$'\e[01;44;33m'
+  export LESS_TERMCAP_ue=$'\e[0m'
+  export LESS_TERMCAP_us=$'\e[01;32m'
+fi
+
+if which lsd &>/dev/null; then
+  alias ls="lsd"
+  alias lst="lsd -lS --total-size"
+fi
+
+if which viddy &>/dev/null; then
+  alias watch="viddy -d"
+fi
+
+cmd aws && alias wasabi="aws --profile wasabi --endpoint-url=https://s3.wasabisys.com s3"
+cmd aws && alias wasabidgc="aws --profile wasabi-dgc --endpoint-url=https://s3.wasabisys.com s3"
+cmd ip && alias ip="ip -br -c"

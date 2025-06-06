@@ -1,0 +1,7 @@
+function fixallperms() {
+  find "$HOME" -mindepth 1 -maxdepth 1 -type d ! -name ".*" -exec chown -Rc "$(id -un):$(id -gn)" {} + -exec chmod -Rc a-xst+X,u+rw,go-w+r {} +
+}
+
+function ipinfo() {
+  curl ipinfo.io/$1
+}

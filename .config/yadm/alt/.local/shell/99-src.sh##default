@@ -1,0 +1,39 @@
+#!/bin/bash
+
+# source ~/.local/shell/99-src.sh
+
+colorText() {
+  color=$1
+  shift 1
+  if ((color)); then
+    echo -e "$(tput setaf $color)$*$(tput sgr0)"
+  else
+    echo -e "$@"
+  fi
+}
+
+checkroot() {
+  if [ $UID -eq 0 ]; then
+    $@
+  else
+    sudo $@
+  fi
+}
+
+cmd() {
+  which $1 &>/dev/null && return 0 || return 1
+}
+
+chkruncmd() {
+  if command -v $1 &>/dev/null; then
+    echo "$1 exists"
+    if ! pgrep -f $1 &>/dev/null; then
+      echo "$1 is not running, running $@"
+      $@ &
+    else
+      echo "$1 is running, doing nothing"
+    fi
+  else
+    "$1 not found"
+  fi
+}
