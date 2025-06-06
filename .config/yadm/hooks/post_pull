@@ -1,0 +1,71 @@
+#!/bin/bash
+
+. ~/.shell/99-src.sh
+
+check_sheldon() {
+  colorText 4 "Checking sheldon..."
+  cmd sheldon && colorText 2 "→ sheldon present. unbothered" && update_sheldon && return 0
+  [ -f /usr/bin/sheldon ] && colorText 2 "→ sheldon present. unbothered" && update_sheldon && return 0
+  [ -f "$HOME/.local/bin/sheldon" ] && colorText 2 "→ local sheldon present. unbothered" && update_sheldon && return 0
+  [ "$(uname -m)" = "armv6l" ] && colorText 2 "→ incompatible architecture" && return 0
+  cmd pacman && colorText 2 "→ pacman present. unbothered" && return 0
+  cmd brew && colorText 1 "→ homebrew present. install sheldon with that" && return 1
+  cmd apk && [ "$(uname -m)" = x86_64 ] && colorText 1 "→ apk present on an x86_64 system. install it with that" && return 1
+  colorText 4 "→ Trying to install sheldon"
+  curl --proto '=https' -fLsS https://rossmacarthur.github.io/install/crate.sh | bash -s -- --repo rossmacarthur/sheldon --to ~/.local/bin -f && update_sheldon
+}
+
+update_sheldon() {
+  sheldon lock --update
+}
+
+check_topgrade() {
+  colorText 4 "Checking topgrade..."
+  if [ ! -e ~/.local/bin/topgrade ]; then
+    if [ "$(uname -s)" == "Darwin" ]; then
+      colorText 1 "→ local topgrade isn't installed."
+      tg_ver="16.0.3"
+      arch="$(uname -m)"
+      wget "https://github.com/topgrade-rs/topgrade/releases/download/v${tg_ver}/topgrade-v${tg_ver}-${arch}-apple-darwin.tar.gz"
+      tar xzvf "topgrade-v${tg_ver}-${arch}-apple-darwin.tar.gz"
+      rm "topgrade-v${tg_ver}-${arch}-apple-darwin.tar.gz"
+      mkdir -p ~/.local/bin/
+      mv ./topgrade ~/.local/bin/
+
+    else
+      colorText 1 "→ local topgrade isn't installed."
+      tg_ver="16.0.3"
+      arch="$(uname -m)"
+      case $arch in
+      x86_64 | armv7)
+        wget "https://github.com/topgrade-rs/topgrade/releases/download/v${tg_ver}/topgrade-v${tg_ver}-${arch}-unknown-linux-musl.tar.gz"
+        tar xzvf "topgrade-v${tg_ver}-${arch}-unknown-linux-musl.tar.gz"
+        rm "topgrade-v${tg_ver}-${arch}-unknown-linux-musl.tar.gz"
+        mkdir -p ~/.local/bin/
+        mv ./topgrade ~/.local/bin/
+        ;;
+      *)
+        colorText 1 "→ incompatible architecture"
+        return 0
+        ;;
+      esac
+    fi
+  else
+    colorText 2 "→ local topgrade present. unbothered."
+  fi
+}
+
+fix_symlinks() {
+  cmd symlinks || return 0
+  colorText 4 "Checking dangling symlinks in $HOME/.config..."
+  symlinks -rd ~/.config/ 2>&1 | sed -e '/absolute/d' -e '/other_fs/d' -e '/messy/d'
+}
+
+fix_ssh_perms() {
+  colorText 4 "Resetting ssh perms..." && chmod -R a-xst+X,u+rw,go-rwx ~/.ssh/
+}
+
+check_sheldon
+check_topgrade
+fix_symlinks
+fix_ssh_perms
