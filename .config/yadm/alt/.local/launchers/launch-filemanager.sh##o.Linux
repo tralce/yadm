@@ -1,0 +1,17 @@
+#!/bin/bash
+
+options=
+
+for fm in \
+  nautilus \
+  nemo \
+  thunar \
+  pcmanfm \
+  caja
+do
+  if which $fm &> /dev/null
+  then
+    $fm $options
+    break
+  fi
+done

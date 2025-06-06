@@ -1,0 +1,60 @@
+#!/bin/bash
+
+terminals=(
+  alacritty
+  kitty
+  wezterm
+  terminology
+  terminator
+  gnome-terminal
+  urxvt
+  xterm
+)
+
+for te in "${terminals[@]}"; do
+  if command -v "$te" &>/dev/null; then
+    case "$te" in
+    alacritty)
+      if [ $# -gt 0 ]; then
+        exec "$te" -e "$@"
+      else
+        exec "$te"
+      fi
+      ;;
+    kitty)
+      if [ $# -gt 0 ]; then
+        exec "$te" -- "$@"
+      else
+        exec "$te"
+      fi
+      ;;
+    wezterm)
+      if [ $# -gt 0 ]; then
+        exec "$te" start -- "$@"
+      else
+        exec "$te"
+      fi
+      ;;
+    gnome-terminal)
+      if [ $# -gt 0 ]; then
+        exec "$te" -- "$@"
+      else
+        exec "$te"
+      fi
+      ;;
+    urxvt | xterm | terminator | terminology)
+      if [ $# -gt 0 ]; then
+        exec "$te" -e "$@"
+      else
+        exec "$te"
+      fi
+      ;;
+    *)
+      exec "$te" "$@"
+      ;;
+    esac
+    break
+  fi
+done
+
+# notify-send "No supported terminal emulator found."

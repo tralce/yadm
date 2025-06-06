@@ -1,0 +1,26 @@
+#!/bin/bash
+
+source ~/.bashrc
+
+launcherlist=(
+  rlaunch
+  wofi
+  dmenu_run
+  rofi
+)
+
+options=
+
+for launcher in ${launcherlist[@]}
+do
+  if which $launcher &> /dev/null
+  then
+    case $launcher in
+      rlaunch)  options="-b -p -h 32";;
+      rofi)     options="-show run";;
+      wofi)     options="--show drun";;
+    esac
+    $launcher $options
+    break
+  fi
+done

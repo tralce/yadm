@@ -1,0 +1,12 @@
+#!/bin/bash
+
+options="$@"
+
+for util in gdu ncdu du
+do
+  if which $util &> /dev/null
+  then
+    $util "$options"
+    break
+  fi
+done

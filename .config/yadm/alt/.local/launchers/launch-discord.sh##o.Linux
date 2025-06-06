@@ -1,0 +1,21 @@
+#!/bin/bash
+
+if pgrep Discord; then
+  notify-send -t 1500 "Discord already running."
+  exit 0
+fi
+
+if pgrep Hyprland; then
+  options="--enable-features=UseOzonePlatform --ozone-platform=wayland $*"
+else
+  options="$*"
+fi
+
+for discordapp in \
+  vesktop \
+  discord; do
+  if which $discordapp &>/dev/null; then
+    $discordapp $options &
+    break
+  fi
+done
