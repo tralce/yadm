@@ -1,0 +1,17 @@
+#!/bin/bash
+. ~/.local/shell/99-src.sh
+
+checkroot -v
+
+if [[ "$1" =~ ^[0-9]{8}$ ]]; then
+  for thread in 1 2 3 4 5; do
+    for type in motion snapshot; do
+      checkroot -v
+      [ -d /srv/cam/frames/${thread}/${type} ] && checkroot jpg2mp4.sh -t thread${thread} -c ${type} -d $1 -D
+    done
+  done
+else
+  echo "Bad or missing date"
+  echo "oneoff.sh YYYYMMDD"
+  exit 1
+fi

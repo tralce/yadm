@@ -1,0 +1,5 @@
+#!/bin/bash
+grep --color=auto "$@" \
+  ~/arch-packages/tralce-meta-*/PKGBUILD \
+  ~/arch-packages/tralce-pc-*/PKGBUILD \
+  ~/arch-packages/tralce-vm-*/PKGBUILD

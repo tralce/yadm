@@ -1,0 +1,94 @@
+#!/bin/bash
+# vim:fdm=indent
+
+. ~/.local/shell/99-src.sh
+
+[ "$UID" -eq 0 ] || sudo -v
+
+trap exit 1 INT
+
+backupdir="$HOME/essential_backup.sh-$(hostname -s)-$(date +%Y-%m-%d)"
+
+[ ! -d "$backupdir" ] && mkdir -p "$backupdir"
+
+backupcron() {
+  colorText 2 "Backing up crontabs..."
+  mkdir -p $backupdir/cron/
+  [ -d /var/spool/cron ] && checkroot cp -r /var/spool/cron/* $backupdir/cron/
+  [ -d /etc/crontabs ] && checkroot cp -r /etc/crontabs/* $backupdir/cron/
+}
+
+backupsystemd-boot() {
+  colorText 2 "Backing up systemd-boot..."
+  mkdir -p $backupdir/systemd-boot
+  for systemdbootfile in /boot/loader/loader.conf /boot/loader/entries/*; do
+    [ -e "$systemdbootfile" ] && cp $systemdbootfile $backupdir/systemd-boot/
+  done
+}
+
+backupgrub() {
+  colorText 2 "Backing up grub..."
+  mkdir -p $backupdir/grub
+  for grubfile in /boot/grub/grub.cfg /etc/default/grub; do
+    [ -e "$grubfile" ] && cp $grubfile $backupdir/grub/
+  done
+}
+
+backupshellhist() {
+  colorText 2 "Backing up shell histories..."
+  mkdir -p $backupdir/hist
+  [ -e $HOME/.bash_history ] && cp $HOME/.bash_history $backupdir/hist/bash_history
+  [ -e $HOME/.histfile ] && cp $HOME/.histfile $backupdir/hist/zsh_history
+  [ -e $HOME/.local/share/fish/fish_history ] && cp $HOME/.local/share/fish/fish_history $backupdir/hist/fish_history
+}
+
+backupsyslinux() {
+  colorText 2 "Backing up syslinux..."
+  mkdir -p $backupdir/syslinux
+  cp /boot/syslinux/syslinux.cfg $backupdir/syslinux/
+}
+
+backupfstab() {
+  colorText 2 "Backing up fstab..."
+  mkdir -p $backupdir/
+  cp /etc/fstab $backupdir/fstab
+}
+
+backupdocker() {
+  colorText 2 "Backing up docker..."
+  for dockerDir in $HOME/prod $HOME/stack-*; do
+    [ -d $dockerDir ] && cp -r $dockerDir $backupdir/
+  done
+}
+
+backupssh() {
+  colorText 2 "Backing up ssh..."
+  mkdir -p $backupdir/ssh-etc/
+  mkdir -p $backupdir/ssh-home/
+  checkroot cp -r /etc/ssh/ssh* $backupdir/ssh-etc/
+  for sshfile in $HOME/.ssh/id_*; do
+    [ -e "$sshfile" ] && cp $sshfile $backupdir/ssh-home/
+  done
+}
+
+backupyadm() {
+  cat ~/.local/share/yadm/repo.git/config >"$backupdir/yadm.$(whoami)"
+  checkroot cat /etc/yadm/data/repo.git/config >"$backupdir/yadm.system"
+}
+
+essential_backup() {
+  cmd crontab && backupcron
+  test -e /boot/loader &>/dev/null && backupsystemd-boot
+  test -e /boot/grub &>/dev/null && backupgrub
+  test -e /boot/syslinux &>/dev/null && backupsyslinux
+  backupfstab
+  backupssh
+  backupshellhist
+  backupyadm
+  cmd docker && backupdocker
+}
+
+essential_backup
+
+checkroot chown -R "$(whoami)" "$backupdir/"
+chmod -R a-xst+X,u+rw,og-w+r "$backupdir/"

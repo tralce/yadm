@@ -1,0 +1,24 @@
+#!/bin/bash
+fail() {
+  echo "$@"
+  exit 1
+}
+
+which uuidgen || fail "uuidgen missing"
+git rev-parse --is-inside-work-tree || fail "not inside a worktree"
+
+addopts="-u"
+
+while getopts "A" arg
+do
+  case $arg in
+    A)  addopts="-A $(git rev-parse --show-toplevel)";;
+  esac
+done
+shift $(( OPTIND - 1 ))
+
+commitmessage="${@:-$(uuidgen)}"
+
+git add ${addopts}
+git commit -m "${commitmessage}"
+git push

@@ -1,0 +1,7 @@
+#!/bin/bash
+
+. ~/.local/shell/99-src.sh
+
+cmd openrgb && openrgb -p openrgb &
+chkruncmd ~/.bin/monitor_downloads.sh
+chkruncmd synergy

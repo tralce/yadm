@@ -1,0 +1,31 @@
+#!/bin/bash
+
+. ~/.local/shell/99-src.sh
+
+test -e ~/.screenlayout/screen.sh && sleep 1 && ~/.screenlayout/screen.sh && sleep 1
+
+(sleep 1 && nitrogen --restore) &
+
+xhost +local:
+
+chkruncmd /usr/lib/mate-polkit/polkit-mate-authentication-agent-1
+chkruncmd blueman-applet
+chkruncmd cbatticon
+chkruncmd flameshot
+chkruncmd indicator-sound-switcher
+chkruncmd nm-applet
+chkruncmd numlockx
+chkruncmd pa-applet
+chkruncmd picom --vsync --backend glx
+chkruncmd ydotoold
+
+xmodmap ~/.Xmodmap
+
+[ -e ~/.bin/razer.py ] && python ~/.bin/razer.py &
+
+sleep 1
+
+DISPLAY=:0.0 xset dpms 0 0 0
+DISPLAY=:0.0 xset s off -dpms
+
+test -e ~/.bin/autostart-xorg-local.sh && ~/.bin/autostart-xorg-local.sh

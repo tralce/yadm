@@ -1,0 +1,9 @@
+#!/bin/bash
+match=$( \
+  rg --files-with-matches --no-messages "$@"| \
+  sort -rn | \
+  fzf --preview-window right:75%:wrap --preview "\
+  highlight -O ansi {} 2> /dev/null | \
+  rg --colors 'match:bg:yellow' --ignore-case --pretty --context 10 '$@' || \
+  rg --ignore-case --pretty --context 10 '$@' {}" \
+  ) && vim $match

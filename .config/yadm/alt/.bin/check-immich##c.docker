@@ -1,0 +1,11 @@
+#!/bin/bash
+
+tmp_env=$(mktemp)
+wget -O "$tmp_env" "https://github.com/immich-app/immich/releases/latest/download/example.env"
+cmp --silent "$tmp_env" ~/stacks/immich/.env || vimdiff "$tmp_env" ~/stacks/immich/.env
+rm "$tmp_env"
+
+tmp_compose=$(mktemp)
+wget -O "$tmp_compose" "https://github.com/immich-app/immich/releases/latest/download/docker-compose.yml"
+vimdiff "$tmp_compose" ~/stacks/immich/docker-compose.yaml
+rm "$tmp_compose"

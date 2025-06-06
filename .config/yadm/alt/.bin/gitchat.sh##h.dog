@@ -1,0 +1,32 @@
+#!/bin/bash
+
+echo;date
+
+year="$(date --date="yesterday" +%Y)"
+month="$(date --date="yesterday" +%m)"
+day="$(date --date="yesterday" +%d)"
+
+pushd ~/ESO/wtu/Logs && echo "Entering log dir"
+
+[ ! -d ${year}/${month} ] && mkdir -p ${year}/${month} ] && echo "created ${year}/${month}"
+
+if grep -a -E "${year}-${month}-${day}T" ChatLog.log >> ${year}/${month}/${year}-${month}-${day}.log
+then
+  echo "grepped."
+else
+  echo "failed to grep"
+  exit 1
+fi
+
+# if sed -i "/${year}-${month}-${day}/d" ChatLog.log
+# then
+#   echo "sedded."
+# else
+#   echo "failed to sed"
+#   exit 1
+# fi
+
+git add -A .
+git commit -m "$(uuidgen)"
+git push
+

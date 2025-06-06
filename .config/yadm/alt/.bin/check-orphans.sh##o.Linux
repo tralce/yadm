@@ -1,0 +1,22 @@
+#!/bin/bash
+# checks for orphaned pacman packages and offers to remove them
+
+if command -v apt &>/dev/null; then
+  pkgs=$(apt-get -s autoremove | awk '/^Remv/ {print $2}')
+  if [ -z "$pkgs" ]; then
+    exit 0
+  else
+    sudo apt autoremove -y && exit 0 | exit 1
+  fi
+elif command -v pacman &>/dev/null; then
+  tmp=$(mktemp)
+  pacman -Qqdt >>"$tmp"
+  if [ "$(wc -l "$tmp" | cut -f1 -d ' ')" -gt 0 ]; then
+    echo "Found these orphans."
+    cat "$tmp"
+    gum confirm "Remove them?" && sudo pacman -Rsn $(cat "$tmp" | xargs)
+  else
+    echo "No orphans found."
+  fi
+  rm "$tmp"
+fi

@@ -1,0 +1,13 @@
+#!/bin/bash -e
+iso="$HOME/ISOs/OSes/Linux/archlinux-$(date +%Y.%m.%d)-x86_64.iso"
+newowner="$(whoami):$(id -gn)"
+workingdir="/tmp/archiso-$(uuidgen)"
+
+sudo -v
+
+sudo cp -r /usr/share/archiso/configs/releng/ /tmp/archlive
+sudo mkarchiso -v -w $workingdir -o $(dirname $iso) /tmp/archlive
+sudo chown -c $newowner $iso
+sudo rm -r /tmp/archlive
+sudo rm -r $workingdir
+# gum confirm "Boot the iso for test?" && run_archiso -i $HOME/ISOs/OSes/archlinux-$(date +%Y.%m.%d)-x86_64.iso || exit 0

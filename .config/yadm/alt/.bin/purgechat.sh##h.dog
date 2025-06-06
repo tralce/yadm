@@ -1,0 +1,22 @@
+#!/bin/bash
+
+echo;date
+
+year="$(date +%Y)"
+month="$(date +%m)"
+day="$(date +%d)"
+
+pushd ~/ESO/wtu/Logs && echo "Entering log dir"
+
+if sed -i "/${year}-${month}-${day}T/!d" ChatLog.log
+then
+  echo "sedded."
+else
+  echo "failed to sed"
+  exit 1
+fi
+
+git add -A .
+git commit -m "$(uuidgen)"
+git push
+

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+. ~/.local/shell/99-src.sh
+
+~/.local/launchers/launch-discord.sh --start-minimized &

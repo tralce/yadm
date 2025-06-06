@@ -1,0 +1,26 @@
+#!/bin/bash
+
+delay_f=5
+delay_c=20
+range=5
+
+termfile="$HOME/.terminate_mousemove"
+uid=$(id -u)
+
+echo "started at $(date)"
+
+while :
+do
+  if [[ -f "${termfile}" ]]
+  then
+    echo "termfile noticed; terminating at $(date)..."
+    rm ${termfile}
+    break
+  fi
+  px_x=$(seq -${range} ${range} | shuf -n 1)
+  px_y=$(seq -${range} ${range} | shuf -n 1)
+  delay=$(seq ${delay_f} ${delay_c} | shuf -n 1)
+  echo "[$(date)] moving cursor by ${px_x},${px_y} and then waiting ${delay} seconds..."
+  YDOTOOL_SOCKET=/run/user/${uid}/.ydotool_socket ydotool mousemove -x ${px_x} -y ${px_y}
+  sleep ${delay}
+done

@@ -1,0 +1,88 @@
+#!/bin/bash
+# vim: fdm=marker
+# otg.sh v2022-06-02: on-the-go backupper so I don't have to rewrite backup.sh
+# to support being run on other computers.
+
+trap "bye 1" INT # {{{
+. ~/.local/shell/99-src.sh
+dest="$HOME"
+dirlist=
+fast="-fastcheck true"
+flip=0
+ia=
+perms=
+terse=
+srclist=(ssh://nas.eclart.xyz//home/violet)
+# }}}
+
+bye() { # {{{
+  [ -n "$TMUX" ] && tmux setw automatic-rename on
+  exit "$1"
+} # }}}
+
+doSync() { # {{{
+  for src in ${srclist[@]}; do
+    for dir in ${dirlist[@]}; do
+      if test -d ${dest}/${dir}; then
+        [ -n "$TMUX" ] && tmux rename-window "otg.sh - ${src}/${dir}"
+        colorText 2 ${dest}/${dir}
+        if [ $flip -eq 1 ]; then
+          unison -auto $perms $ia $fast $terse ${dest}/${dir} ${src}/${dir}
+        else
+          unison -auto $perms $ia $fast $terse ${src}/${dir} ${dest}/${dir}
+        fi
+      else
+        colorText 1 ${dest}/${dir} does not exist on this system.
+      fi
+    done
+  done
+  bye 0
+} # }}}
+
+while getopts "FIo:q" arg; do # {{{
+  case $arg in
+  I) ia="-ignorearchives" ;;
+  F) fast="-fastcheck false" ;;
+  o)
+    src="$OPTARG"
+    flip=1
+    ;;
+  q) terse="-terse" ;;
+  *) bye 1 ;;
+  esac
+done
+shift $((OPTIND - 1)) # }}}
+
+case "$1" in # {{{
+camp)
+  [ -z $2 ] && bye 1 || dirlist=(Documents Downloads)
+  src="ssh://${2}//home/tralce"
+  ;;
+backup) dirlist=(Desktop Documents Downloads ESO ISOs Minecraft Pictures SourceSoftware USB_Toolkits Work) ;;
+crypt)
+  dirlist=(crypt)
+  src="ssh://nas.eclart.xyz//media"
+  dest="/media"
+  ;;
+downloads) dirlist=(Downloads) ;;
+documents) dirlist=(Documents) ;;
+eso) dirlist=(ESO) ;;
+mb) dirlist=(MiscBackups) ;;
+pictures) dirlist=(Pictures) ;;
+quick) dirlist=(Documents Downloads) ;;
+usb)
+  unset srclist
+  for drive in /media/USB*GB*; do [ -d $drive ] && srclist+=($drive); done
+  dirlist=(ISOs SourceSoftware USB_Toolkits)
+  perms="-fat"
+  flip=1
+  ;;
+*)
+  echo 'Valid options: [-I] [-F] '
+  echo 'backup   | downloads | eso     | mb'
+  echo 'pictures | quick     | scripts | usb'
+  bye 1
+  ;;
+esac
+
+[ -n "${dirlist[0]}" ] && doSync # }}}

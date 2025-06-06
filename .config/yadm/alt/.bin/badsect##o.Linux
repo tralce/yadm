@@ -1,0 +1,27 @@
+#!/bin/bash
+# bad sector check 2020-02-16
+# uses awk etc to extract actually useful information from smartctl -a
+# depends on sudo, awk, column, smartmontools
+
+. ~/.local/shell/99-src.sh
+
+checkroot -v
+
+[ $# -eq 0 ] && echo "$(basename "$0") /dev/sdx [ /dev/sdy /dev/sdz ... ]" && exit 1
+# [ $UID -ne 0 ] && echo "Must be run as root." && exit 1
+
+for disk in "$@"; do
+  echo -e "$disk"
+  tmp=$(mktemp)
+  checkroot smartctl -a "$disk" | grep 'Device Model\|User Capacity'
+  checkroot smartctl -a "$disk" | grep 'ATTRIBUTE_NAME\|Reallocated_Sector_Ct\|Reallocated_Event_Count\|Current_Pending_Sector\|Offline_Uncorrectable\|Spin_Retry_Count\|Power_On_Hours\|Wear\|Fail\|Power_Cycle_Count\|_Error\|Total_LBAs_Written' | awk '{print $2,",",$10,",",$4,",",$5,",",$6,",",$7}' | column -ts,
+  checkroot smartctl -l error "$disk" >"$tmp"
+  if grep "Error Count" "$tmp" 2>/dev/null; then
+    colorText 1 "DISK ERRORS PRESENT - check smartctl -l error $disk"
+  elif grep "No Errors Logged" "$tmp" &>/dev/null; then
+    colorText 2 "Disk is free of errors in SMART error log."
+  else
+    colorText 6 "Disk doesn't seem to support SMART error logging"
+  fi
+  rm "$tmp"
+done

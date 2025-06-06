@@ -1,0 +1,17 @@
+#!/bin/bash
+length=28
+symbols=(
+  '!'
+  '#'
+  '$'
+  '%'
+  '&'
+  '?'
+  '_'
+)
+
+if [ $# -gt 0 ]; then
+  [ $1 -ge 0 ] && length=$1 || exit 1
+fi
+
+echo "$(pwgen -n -c $((length - 1)) 1)${symbols[$RANDOM % ${#symbols[@]}]}"

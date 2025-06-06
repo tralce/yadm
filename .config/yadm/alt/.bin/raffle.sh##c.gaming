@@ -1,0 +1,38 @@
+#!/bin/bash
+
+workingfile="$(mktemp)"
+shuffledfile="$(mktemp)"
+winners="$(mktemp)"
+
+[ -z $1 ] && echo "Need a number of winners, yo." && exit 1
+
+while read line
+do
+  line=$(echo $line | tr -cd '[:alnum:] [:space:]')
+  entry=1
+  count=$(echo $line|awk '{print $2}')
+  ticket="$(echo $line|awk '{print $1}')"
+
+  while [[ $entry -le $count ]]
+  do
+    echo "$ticket" >> $workingfile
+    let ++entry
+  done
+done
+
+totalentries="$(wc -l $workingfile|awk '{print $1}')"
+echo -e "\033[36m$totalentries total entries\n\033[0m"
+
+shuf $workingfile | sed '/^$/d' > $shuffledfile
+
+while [ "$(wc -l $winners|sed "s/ .*//")" -lt "$1" ]
+do
+  winningticket=$(awk "FNR==$(shuf -i 1-$totalentries -n1) {print \$0}" $shuffledfile)
+  grep $winningticket $winners &> /dev/null || echo $winningticket >> $winners
+done
+
+shuf $winners
+
+rm $workingfile
+rm $shuffledfile
+rm $winners

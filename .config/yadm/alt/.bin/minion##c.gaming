@@ -1,0 +1,44 @@
+#!/bin/bash
+
+echnot() {
+  echo "$@"
+  notify-send "$(basename $0)" "$@"
+}
+
+test -d ~/.minion || mkdir ~/.minion
+ln -sf ~/ESO/minion.xml ~/.minion/minion.xml
+
+miniondir="tmp/minion-$(uuidgen)"
+
+mkdir $miniondir
+
+echnot "Mounting minion squashfs..."
+
+squashfuse ~/ESO/minion.squashfs $miniondir
+
+echnot "Running Minion.jar..."
+
+$miniondir/jre1.8.0_341/bin/java -jar $miniondir/Minion-jfx.jar
+
+echnot "Unmounting squashfs..."
+
+fusermount -u $miniondir
+
+rmdir $miniondir
+
+echnot "Updating price table..."
+temp=$(mktemp)
+curl -o $temp 'https://us.tamrieltradecentre.com/download/PriceTable'
+unzip -o $temp -d ~/ESO/tralce/AddOns/TamrielTradeCentre/
+rm $temp
+
+echnot "Fixing treasure icons..."
+cmp ~/ESO/tralce/Treasure_2.dds ~/ESO/tralce/AddOns/MapPins/Treasure_2.dds &> /dev/null || cp -v ~/ESO/tralce/Treasure_2.dds ~/ESO/tralce/AddOns/MapPins/
+cmp ~/ESO/tralce/Treasure_3.dds ~/ESO/tralce/AddOns/MapPins/Treasure_3.dds &> /dev/null || cp -v ~/ESO/tralce/Treasure_3.dds ~/ESO/tralce/AddOns/MapPins/
+cmp ~/ESO/tralce/Treasure_4.dds ~/ESO/tralce/AddOns/MapPins/Treasure_4.dds &> /dev/null || cp -v ~/ESO/tralce/Treasure_4.dds ~/ESO/tralce/AddOns/MapPins/
+
+# echnot "Resetting permissions..."
+# chown -Rc "$(id -un)":"$(id -gn)" ~/ESO/
+# chmod -Rc a-xst+X,u+rw,og-w+r ~/ESO/
+
+echnot "Done!"

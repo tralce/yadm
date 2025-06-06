@@ -1,0 +1,16 @@
+#!/usr/bin/python3
+import openrazer.client
+import time
+while True:
+    localtime = time.localtime()
+    result = time.strftime("%I:%M:%S %p", localtime)
+    print("Loop iteration at", result)
+    a = openrazer.client.DeviceManager()
+    a.turn_off_on_screensaver = False
+    for device in a.devices:
+#       device.brightness = 100
+        device.fx.static(0, 255, 222)
+        if device.type == "mouse":
+            device.poll_rate = 500
+#       print("Sleeping 10")
+        time.sleep(10)

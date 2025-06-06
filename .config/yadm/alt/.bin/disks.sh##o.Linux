@@ -1,0 +1,140 @@
+#!/bin/bash
+# vim:fdm=marker
+. ~/.local/shell/99-src.sh
+
+checkroot -v
+
+# variables, sources [[[
+image=
+disk=
+label=
+disks_stopped=no
+# ]]]
+
+helpmsg() { # [[[
+  echo "$(basename $0) [-d disk] [-i iso] [-f fs] [-l label] [-h]"
+  echo '-d disk  ("-d /dev/sda")'
+  echo '-i iso   ("-i arch.iso")'
+  echo '-f fs    ("-f btrfs   ")'
+  echo '-l label ("-l my_usb  ")'
+  echo '-t table ("-t msdos   ")'
+  echo '-h       ( help        )'
+} # ]]]
+
+while getopts "d:i:f:l:t:h" arg; do # [[[
+  case ${arg} in
+  i) image="${OPTARG}" ;;
+  d) disk="${OPTARG}" ;;
+  f) fs="${OPTARG}" ;;
+  l) label="${OPTARG}" ;;
+  t) table="${OPTARG}" ;;
+  *) helpmsg ;;
+  esac
+done
+shift $((OPTIND - 1)) # ]]]
+
+terminate() { # [[[
+  if [ ${disks_stopped} = "yes" ]; then
+    colorText 3 "Starting disks.service"
+    systemctl --user start disks.service
+  fi
+  exit ${1}
+} # ]]]
+
+fail() { # [[[
+  case "${1}" in
+  1) exitstring="You must specify exactly one disk as an argument" ;;
+  2) exitstring="pv not installed" ;;
+  3) exitstring="There was an issue unmounting ${disk}" ;;
+  4) exitstring="Something went wrong with wipefs" ;;
+  5) exitstring="parted failed creating a GPT" ;;
+  6) exitstring="Something went wrong while copying" ;;
+  7) exitstring="parted failed creating a partition" ;;
+  9) exitstring="User did not press y or something else happened" ;;
+  8) exitstring="${disk} is not a block device" ;;
+  10) exitstring="Failed creating a filesystem" ;;
+  11) exitstring="${fs} is not a supported filesystem" ;;
+  esac
+  colorText 1 "${exitstring} -- Exiting."
+  terminate ${1}
+} # ]]]
+
+stopdisks() { # [[[
+  if systemctl --user is-active disks.service &>/dev/null; then
+    colorText 3 "Stopping disks.service"
+    systemctl --user stop disks.service
+    disks_stopped="yes"
+    sleep 1
+  fi
+} # ]]]
+
+umnt() { # [[[
+  if grep -q "${disk}" /etc/mtab; then
+    checkroot umount ${disk}*
+    sleep 1
+  fi
+} # ]]]
+
+command -v pv &>/dev/null || fail 2
+
+if [ -n "${disk}" ]; then
+  if [ -b "${disk}" ]; then
+    if [ -z ${image} ]; then
+      # erase disk # [[[
+      if [ -z "${label}" ]; then
+        colorText 3 "Guessing a label..."
+        label="$(checkroot smartctl -i ${disk} | grep Capacity | sed -e 's/.*bytes \[\(.*\)\].*/\1/' -e 's/ //g')"
+        [ -z "${label}" ] && label="$(lsblk -o SIZE ${disk} | grep -v SIZE | head -n 1 | sed -e 's/^ *//g' -e 's/ //g')"
+      fi
+      if gum confirm "About to demolish ${disk} (${label})"; then
+        stopdisks
+        umnt
+        colorText 3 "Disk is ${disk}, partition will be ${disk}1"
+        colorText 3 "Label will be ${label}"
+        colorText 3 "Wiping all existing filesystems..."
+        checkroot wipefs --all ${disk} &>/dev/null || fail 4
+        colorText 3 "Creating partition table..."
+        checkroot parted ${disk} mklabel ${table:-gpt} || fail 5
+        colorText 3 "Creating partition..."
+        checkroot parted ${disk} mkpart primary 0% 100% || fail 7
+        sleep 2
+        colorText 3 "Formatting with ${fs:-ntfs}..."
+        case ${fs:=ntfs} in
+        btrfs) checkroot mkfs.btrfs -f -L "${label}" ${disk}1 || fail 10 ;;
+        ext4) checkroot mkfs.ext4 -L "${label}" ${disk}1 || fail 10 ;;
+        ntfs) checkroot mkfs.ntfs --fast --label "${label}" ${disk}1 || fail 10 ;;
+        vfat) checkroot mkfs.vfat -n "${label}" ${disk}1 || fail 10 ;;
+        fat12) checkroot mkfs.vfat -n "$(echo "${label}" | sed -e 's/\./_/g')" -F 12 ${disk}1 || fail 10 ;;
+        fat16) checkroot mkfs.vfat -n "$(echo "${label}" | sed -e 's/\./_/g')" -F 16 ${disk}1 || fail 10 ;;
+        fat32) checkroot mkfs.vfat -n "$(echo "${label}" | sed -e 's/\./_/g')" -F 32 ${disk}1 || fail 10 ;;
+        exfat) checkroot mkfs.exfat -n "$(echo "${label}" | sed -e 's/\./_/g')" ${disk}1 || fail 10 ;;
+        *) fail 11 ;;
+        esac
+        colorText 3 "Disk info:"
+        checkroot badsect "${disk}"
+        terminate 0
+      fi
+      # ]]]
+    else
+      # copy image [[[
+      colorText 6 "Input:  ${image}"
+      colorText 6 "Output: ${disk}"
+      if gum confirm "Punch it?"; then
+        stopdisks
+        umnt
+        if pv "${image}" | checkroot dd bs=1M conv=fdatasync oflag=sync of=${disk}; then
+          sync
+          colorText 2 "Success!"
+          terminate 0
+        else
+          fail 6
+        fi
+      fi
+      # ]]]
+    fi
+  else
+    fail 8
+  fi
+else
+  fail 1
+fi

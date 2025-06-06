@@ -1,0 +1,9 @@
+#!/bin/bash
+if pacman -Qi ${@}; then
+  sudo pacman -Rsn ${@}
+fi
+for pkg in ${@}; do
+  trash-put -v ~/repo/x86_64/dropship-aur/${pkg}*
+  repo-remove ~/repo/x86_64/dropship-aur/dropship-aur.db.tar.gz ${pkg}
+done
+gum confirm "sync repo?" && refresh-repo.sh aur

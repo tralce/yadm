@@ -1,0 +1,20 @@
+#!/bin/bash
+
+[ -n "$SUDO_UID" ] && exit 0
+[ -n "$ZELLIJ" ] && exit 0
+[ -n "$TMUX" ] && exit 0
+[ -n "$TOPGRADE_PREFIX" ] && exit 0
+
+if which zellij &> /dev/null
+then
+    zellij --layout compact attach --create "$(hostname -s)"
+elif which tmux &> /dev/null
+then
+    tmux has-session -t $(hostname -s) &> /dev/null && \
+      tmux attach-session -t $(hostname -s) -d || \
+     #(tmux attach-session -d &> /dev/null || \
+      tmux -2 -u new-session -s $(hostname -s)
+elif which screen &> /dev/null
+then
+  [ -z "$STY" ] && TERM=xterm screen -q -D -R
+fi

@@ -1,0 +1,6 @@
+#!/bin/bash
+if grep -q Revision /proc/cpuinfo
+then
+  curl -L perturb.org/rpi?rev=$(awk '/^Revision/ { print $3 }' /proc/cpuinfo)
+fi
+

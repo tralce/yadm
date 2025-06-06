@@ -1,0 +1,10 @@
+#!/bin/bash
+tmp=$(mktemp -d)
+rustup default stable
+cargo install cross cargo-update
+cd $tmp || exit 1
+git clone https://github.com/topgrade-rs/topgrade.git
+cd $tmp/topgrade || exit 1
+~/.cargo/bin/cross build --release --target arm-unknown-linux-musleabihf || exit 2
+cp target/arm-unknown-linux-musleabihf/release/topgrade $HOME/.config/yadm/alt/.local/bin/topgrade\#\#a.armv6l
+rm -rf $tmp

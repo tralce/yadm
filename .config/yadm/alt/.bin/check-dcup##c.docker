@@ -1,0 +1,43 @@
+#!/bin/bash
+
+. ~/.local/shell/99-src.sh
+
+purgeCommand="docker system prune -a -f --volumes"
+
+which docker &>/dev/null || exit 0
+
+if stat ~/stacks/*/*compose.* &>/dev/null; then
+  for composefile in ~/stacks/*/*compose.*; do
+    [ -e "$composefile" ] || continue
+    echo -e "$(tput setaf 197)$composefile$(tput sgr0)"
+    docker compose -f "$composefile" up -d --dry-run
+    ~/.bin/checkreboot.sh
+    for choice in $(gum choose --height 3 --no-limit "dcdown" "dcup" "fail-out"); do
+      case $choice in
+      "dcdown")
+        echo "Taking stack down..."
+        docker compose -f "$composefile" down
+        sleep 1
+        ;;
+      "dcup")
+        echo "Bringing stack up..."
+        docker compose -f "$composefile" up -d
+        sleep 1
+        ;;
+      "fail-out") exit 1 ;;
+      esac
+    done
+  done
+
+  colorText 197 "Run ${purgeCommand}?"
+  case $(gum choose --height 3 --limit 1 "no" "yes" "fail-out") in
+  "no") exit 0 ;;
+  "yes")
+    $purgeCommand
+    exit 0
+    ;;
+  "fail-out") exit 1 ;;
+  esac
+else
+  echo "no compose projects found."
+fi

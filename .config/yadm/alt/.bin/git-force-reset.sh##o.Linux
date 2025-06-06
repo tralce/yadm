@@ -1,0 +1,10 @@
+#!/bin/bash
+
+fail() {
+  echo "$@"
+  exit 1
+}
+
+git rev-parse --is-inside-work-tree || fail 'not inside a worktree'
+
+gum confirm "git reset?" --default=no && git reset --hard origin/$(git rev-parse --abbrev-ref HEAD)

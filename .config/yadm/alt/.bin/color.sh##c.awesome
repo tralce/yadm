@@ -1,0 +1,9 @@
+#!/bin/bash
+
+export DISPLAY=:0
+
+{
+  color=$(xcolor)
+  echo -n "$color" | xclip -selection clipboard
+  notify-send -w -u critical "$color"
+}

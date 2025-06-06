@@ -1,0 +1,11 @@
+#!/bin/bash
+if tty -s; then
+  /usr/bin/date
+  /usr/bin/free -h
+  /usr/bin/sync
+  /usr/bin/echo 3 >/proc/sys/vm/drop_caches
+  /usr/bin/free -h
+else
+  /usr/bin/sync >/dev/null 2>&1
+  /usr/bin/echo 3 >/proc/sys/vm/drop_caches
+fi

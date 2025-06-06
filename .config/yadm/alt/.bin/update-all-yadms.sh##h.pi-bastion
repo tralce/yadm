@@ -1,0 +1,13 @@
+#!/bin/bash
+# vim: syn=bash
+trap exit INT
+
+for host in $(grep '"' .config/topgrade.d/00-remote_topgrades.toml | sed -e "/=/d" -e "/#/d" -e 's/  "\|",//g'); do
+  echo "$host"
+  ssh "$host" yadm pull
+  # ssh "$host" yadm reset --hard origin/master
+  ssh "$host" sudo -H yadm pull
+  # ssh "$host" sudo -H yadm reset --hard origin/master
+  # ssh "$host" sudo -H yadm --yadm-dir /etc/yadm --yadm-data /etc/yadm/data pull
+  # ssh "$host" sudo -H yadm --yadm-dir /etc/yadm --yadm-data /etc/yadm/data reset --hard origin/master
+done

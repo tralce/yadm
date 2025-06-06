@@ -1,0 +1,9 @@
+#!/bin/bash
+
+url="https://raw.githubusercontent.com/topgrade-rs/topgrade/refs/heads/main/config.example.toml"
+config="$HOME/.config/topgrade.toml"
+tmp_env=$(mktemp)
+
+wget -O "$tmp_env" "$url"
+cmp --silent "$tmp_env" "$config" || vimdiff "$tmp_env" "$config"
+rm "$tmp_env"

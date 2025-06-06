@@ -1,0 +1,62 @@
+#!/bin/bash
+
+ovpn_root="$HOME/.vpn_configs"
+resolv_opts="--script-security 2 --down-pre --up $HOME/.bin/update-resolv-conf.sh --down $HOME/.bin/update-resolv-conf.sh"
+
+gc="gum choose *.ovpn"
+
+function redir() {
+  gum confirm --default=no "Redirect all traffic?" && echo "--redirect-gateway def1"
+}
+
+lb_800=("800response" "${ovpn_root}/800")
+lb_avanti=("AvantiPress" "${ovpn_root}/ava")
+lb_coresight=("Coresight" "${ovpn_root}/csr")
+lb_dgc=("DGC" "${ovpn_root}/dgc")
+lb_home=("Home" "${ovpn_root}/ecl")
+lb_idq=("ID-Queue" "${ovpn_root}/idq")
+lb_jake=("Jake" "${ovpn_root}/jak")
+lb_surfshark=("Surfshark" "${ovpn_root}/sur")
+
+case $(gum choose --limit 1 "$lb_800" "$lb_avanti" "$lb_coresight" "$lb_dgc" "$lb_home" "$lb_idq" "$lb_jake" "$lb_surfshark") in
+"$lb_800")
+  pushd ${lb_800[1]}
+  sudo openvpn --config $($gc) ${resolv_opts} --auth-user-pass auth.txt
+  popd
+  ;;
+"$lb_avanti")
+  # cat ${lb_avanti[1]}/auth.txt | sudo openconnect -u "vhadley@muscatek.com" "https://detroit-tpdrtkckjp.dynamic-m.com/";;
+  /opt/cisco/anyconnect/bin/vpn -s <~/.vpn_configs/27005810/anyconnect.txt
+  gum confirm "Terminate?" && /opt/cisco/anyconnect/bin/vpn -s disconnect
+  ;;
+"$lb_coresight")
+  pushd ${lb_coresight[1]}
+  sudo openvpn --config $($gc) ${resolv_opts} --auth-user-pass auth.txt
+  popd
+  ;;
+"$lb_dgc")
+  pushd ${lb_dgc[1]}
+  sudo openvpn --config $($gc) --auth-user-pass auth.txt $(redir)
+  popd
+  ;;
+"$lb_home")
+  pushd ${lb_home[1]}
+  sudo openvpn --config $($gc) --auth-user-pass auth.txt $(redir)
+  popd
+  ;;
+"$lb_idq")
+  pushd ${lb_idq[1]}
+  sudo openvpn --config $($gc) --auth-user-pass auth.txt
+  popd
+  ;;
+"$lb_jake")
+  pushd ${lb_jake[1]}
+  sudo openvpn --config $($gc) --auth-user-pass auth.txt $(redir)
+  popd
+  ;;
+"$lb_surfshark")
+  pushd ${lb_surfshark[1]}
+  sudo openvpn --config $($gc) --auth-user-pass auth.txt
+  popd
+  ;;
+esac

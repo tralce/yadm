@@ -1,0 +1,26 @@
+#!/bin/bash
+
+agentPath="/usr/local/mesh_services/meshagent"
+
+fail() {
+  echo "$*"
+  exit 1
+}
+
+if test -e $agentPath; then
+  echo "$agentPath exists..."
+  if pgrep meshagent >/dev/null 2>&1; then
+    echo "and meshagent is running. exiting."
+    exit 0
+  fi
+else
+  if [ "$(uname -m)" = "x86_64" ] && [ "$(uname -s)" = "Linux" ]; then
+    tmp="$(mktemp)"
+    wget -O "$tmp" "https://mc.cmpcr.com/meshagents?id=jVrzALWd%24iElj7IphDzZSp%24XnHnfB6YzNJlk5Pn1wgxmshnEuXrADnhImoY6D3Qu&installflags=0&meshinstall=6"
+    chmod +x "$tmp"
+    sudo "$tmp" -install || exit 1
+    rm "$tmp"
+  else
+    fail "bad os or arch. exiting."
+  fi
+fi

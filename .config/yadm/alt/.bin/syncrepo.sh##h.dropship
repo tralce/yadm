@@ -1,0 +1,2 @@
+#!/bin/bash
+aws --profile wasabi --endpoint-url=https://s3.wasabisys.com s3 sync --delete ~/repo/x86_64 s3://dropship/x86_64

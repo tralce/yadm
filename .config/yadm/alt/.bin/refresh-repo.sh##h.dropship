@@ -1,0 +1,8 @@
+#!/bin/bash
+[ -z "${1}" ] && echo 'Must specify "aur" or "meta"' && exit 1
+pushd "$HOME/repo/x86_64/dropship-${1}" || exit 2
+repo-add -R "dropship-${1}.db.tar.xz" ./*.zst
+popd || exit 2
+
+chown -R violet:violet ~/repo/x86_64
+~/.bin/syncrepo.sh

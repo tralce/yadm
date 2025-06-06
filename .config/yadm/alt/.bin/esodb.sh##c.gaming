@@ -1,0 +1,14 @@
+#!/bin/bash
+
+echnot() {
+  echo "$@"
+  notify-send "$(basename $0)" "$@"
+}
+
+echnot "Downloading latest client..."
+wget "https://download.eso-database.com/client/v3/jar/esodb_client.jar" -O ~/ESO/esodb_client.jar
+export JAVA_HOME=/usr/lib/jvm/java-20-openjdk/
+export PATH="$JAVA_HOME/bin:$PATH"
+
+echnot "Running client..."
+java -jar ~/ESO/esodb_client.jar || echnot "Something failed."

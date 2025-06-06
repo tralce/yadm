@@ -1,0 +1,5 @@
+#!/bin/bash
+# echo -e "$(tput setaf 197)$bashrcver on $(uname -srm 2>/dev/null)\n$(uptime -p 2>/dev/null || uptime) (bash)\n$(trash-size.sh -s) in trash."
+echo -e "$(tput setaf 197)$shellver on $(uname -srm 2>/dev/null)"
+uptime -p 2>/dev/null || uptime 2>/dev/null
+echo -e "$($HOME/.bin/trash-size.sh -s) in trash."

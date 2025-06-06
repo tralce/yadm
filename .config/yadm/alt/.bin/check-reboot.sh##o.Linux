@@ -1,0 +1,115 @@
+#!/bin/bash
+# Reboot detection script for Arch + Debian/Ubuntu
+. ~/.local/shell/99-src.sh
+is_lxc() {
+  # Prefer systemd-detect-virt for container detection
+  if command -v systemd-detect-virt >/dev/null 2>&1; then
+    if [ "$(systemd-detect-virt)" = "lxc" ]; then
+      return 0
+    fi
+  fi
+  # fallback: check for 'lxc' in /proc/1/cgroup
+  if grep -qa 'lxc' /proc/1/cgroup 2>/dev/null; then
+    return 0
+  fi
+  return 1
+}
+if is_lxc; then
+  echo "Detected LXC container - skipping reboot check."
+  exit 0
+fi
+reboot_prompt() {
+  [ "$needsreboot" = "y" ] || return
+  choice=$(gum choose --height 5 "No" "One minute timer" "Immediately")
+  case "$choice" in
+  "No") exit 0 ;;
+  "One minute timer") checkroot shutdown -r +1 ;;
+  "Immediately") checkroot systemctl reboot ;;
+  esac
+}
+# Detect distro by existence of apt, dpkg or pacman command
+if command -v apt >/dev/null 2>&1 && command -v dpkg >/dev/null 2>&1; then
+  DISTRO="debian"
+elif command -v pacman >/dev/null 2>&1; then
+  DISTRO="arch"
+else
+  DISTRO="unknown"
+fi
+needsreboot="n"
+if [ "$DISTRO" = "debian" ]; then
+  # Debian/Ubuntu logic
+  # Check reboot-required file
+  if [ -f /var/run/reboot-required ]; then
+    echo -e "$(tput setaf 197)reboot required (reboot-required file detected)$(tput sgr0)"
+    needsreboot="y"
+  else
+    # check kernel upgrades installed but not running
+    CURRENT_KERNEL=$(uname -r)
+
+    # Get the newest installed kernel version
+    NEWEST_KERNEL_VERSION=$(dpkg -l 'linux-image-[0-9]*' 2>/dev/null | grep '^ii' | awk '{print $2}' | sort -V | tail -n1 | sed 's/linux-image-//')
+
+    if [ -n "$NEWEST_KERNEL_VERSION" ]; then
+      # Extract version numbers for comparison
+      CURRENT_VERSION=$(echo "$CURRENT_KERNEL" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+-[0-9]+')
+      NEWEST_VERSION=$(echo "$NEWEST_KERNEL_VERSION" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+-[0-9]+')
+
+      if [ -n "$CURRENT_VERSION" ] && [ -n "$NEWEST_VERSION" ]; then
+        if [ "$CURRENT_VERSION" != "$NEWEST_VERSION" ]; then
+          echo -e "$(tput setaf 197)reboot required (newer kernel installed: $NEWEST_KERNEL_VERSION)$(tput sgr0)"
+          needsreboot="y"
+        else
+          echo "reboot not required (current: $CURRENT_KERNEL, newest: $NEWEST_KERNEL_VERSION)"
+        fi
+      else
+        # Fallback to simple string comparison if version extraction fails
+        if [ "$CURRENT_KERNEL" != "$NEWEST_KERNEL_VERSION" ]; then
+          echo -e "$(tput setaf 197)reboot required (newer kernel installed: $NEWEST_KERNEL_VERSION)$(tput sgr0)"
+          needsreboot="y"
+        else
+          echo "reboot not required"
+        fi
+      fi
+    else
+      echo "No installed linux-image packages detected, cannot determine kernel status."
+      needsreboot="n"
+    fi
+  fi
+elif [ "$DISTRO" = "arch" ]; then
+  # Arch-specific logic: parse kernel version from /boot/vmlinuz*
+  NEXTLINE=0
+  FIND=""
+  for I in $(file /boot/vmlinuz* 2>/dev/null); do
+    if [ $NEXTLINE -eq 1 ]; then
+      FIND="$I"
+      NEXTLINE=0
+    else
+      if [ "$I" = "version" ]; then
+        NEXTLINE=1
+      fi
+    fi
+  done
+  if [ -n "$FIND" ]; then
+    CURRENT_KERNEL=$(uname -r)
+    if [ "$CURRENT_KERNEL" != "$FIND" ]; then
+      echo -e "$(tput setaf 197)reboot required$(tput sgr0)"
+      needsreboot="y"
+    else
+      echo "reboot not required"
+      needsreboot="n"
+    fi
+  else
+    echo "No kernel version found in /boot/vmlinuz*, skipping reboot check."
+    needsreboot="n"
+  fi
+else
+  echo "Unknown distro, skipping reboot check."
+  needsreboot="n"
+fi
+# Handle -c option to prompt for reboot
+while getopts "c" arg; do
+  case $arg in
+  c) reboot_prompt ;;
+  esac
+done
+shift $((OPTIND - 1))

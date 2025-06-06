@@ -1,0 +1,7 @@
+#!/bin/zsh
+cd ~
+rm VencordInstaller.MacOs.zip
+rm -r VencordInstaller.app
+wget https://github.com/Vencord/Installer/releases/latest/download/VencordInstaller.MacOs.zip
+unzip VencordInstaller.MacOs.zip
+open VencordInstaller.app

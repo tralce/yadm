@@ -1,0 +1,41 @@
+#!/bin/bash
+
+# if command -v keep-presence.py &> /dev/null
+# then
+#   echo "starting keep-presence"
+#   keep-presence.py -c -s 10 | tee -a ~/.games/keep-presence.log &
+# else
+#   echo "can't start keep-presence"
+# fi
+
+# ln -sv ~/.eso ~/.games/the-elder-scrolls-online/drive_c/Program\ Files\ \(x86\)/Zenimax\ Online
+
+esodir="${HOME}/ESO"
+basedir="${HOME}/.games/the-elder-scrolls-online/drive_c/"
+gamedir="${basedir}/users/$(whoami)/Documents/Elder Scrolls Online/live"
+
+[ -L "${gamedir}" ] && unlink "${gamedir}"
+[ ! -d "${gamedir}" ] && mkdir -p "${gamedir}"
+
+[ -z "$@" ] && exit 1
+[ ! -d "${esodir}/$1" ] && exit 1
+
+for oldlink in AddOns GuildHistory Logs SavedVariables Screenshots AddOnSettings.txt UserSettings.txt; do
+  if [ -L "${gamedir}/$oldlink" ]; then
+    unlink "${gamedir}/$oldlink"
+  elif [ -d "${gamedir}/$oldlink" ]; then
+    trash-put $oldlink
+  else
+    echo "$oldlink is not a symlink!"
+  fi
+done
+
+ln -sv "${esodir}/tralce/AddOns" "${gamedir}/AddOns"
+ln -sv "${esodir}/$1/Logs" "${gamedir}/Logs"
+ln -sv "${esodir}/$1/GuildHistory" "${gamedir}/GuildHistory"
+ln -sv "${esodir}/$1/SavedVariables" "${gamedir}/SavedVariables"
+ln -sv "${esodir}/$1/Screenshots" "${gamedir}/Screenshots"
+ln -sv "${esodir}/$1/AddOnSettings.txt" "${gamedir}/AddOnSettings.txt"
+ln -sv "${esodir}/$1/UserSettings-$(hostname -s).txt" "${gamedir}/UserSettings.txt"
+
+~/.bin/movemouse.sh | tee -a ~/.games/movemouse.log

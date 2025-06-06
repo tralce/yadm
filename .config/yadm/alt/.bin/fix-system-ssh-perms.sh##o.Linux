@@ -1,0 +1,4 @@
+#!/bin/bash
+sudo chown -c root:root /etc/ssh/ssh_host_*_key /etc/ssh/ssh_host_*_key.pub
+sudo chmod -c a-xst+X,u+rw,go-rwx /etc/ssh/ssh_host_*_key /etc/ssh/ssh_host_*_key.pub
+
