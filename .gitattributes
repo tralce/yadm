@@ -3,4 +3,4 @@
 #.config/yadm/alt/.ssh/config-* filter=git-crypt diff=git-crypt
 #.config/yadm/alt/.ssh/keys/** filter=git-crypt diff=git-crypt
 #.config/yadm/alt/.vpn_configs/** filter=git-crypt diff=git-crypt
-testfile  filter=crypt diff=crypt merge=crypt
+.config/yadm/test*  filter=crypt diff=crypt merge=crypt
