@@ -4,3 +4,4 @@
 #.config/yadm/alt/.ssh/keys/** filter=git-crypt diff=git-crypt
 #.config/yadm/alt/.vpn_configs/** filter=git-crypt diff=git-crypt
 .config/yadm/alt/.aws/*c.trusted  filter=crypt diff=crypt merge=crypt
+.config/yadm/alt/.config/topgrade.d/00-remote-topgrades.toml##h.pi-bastion  filter=crypt diff=crypt merge=crypt
